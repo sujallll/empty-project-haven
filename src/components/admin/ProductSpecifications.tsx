@@ -16,7 +16,16 @@ function SpecificationItem({ label, value }: SpecificationItemProps) {
 
   // Handle array values
   if (Array.isArray(value)) {
-    value = value.join(', ');
+    return (
+      <div className="flex justify-between py-2">
+        <span className="text-muted-foreground">{label}</span>
+        <div className="flex flex-col items-end">
+          {value.map((item, index) => (
+            <span key={index} className="font-medium text-right">{item}</span>
+          ))}
+        </div>
+      </div>
+    );
   }
 
   return (

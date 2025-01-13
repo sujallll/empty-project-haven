@@ -1,3 +1,5 @@
+import type { Json } from "@/integrations/supabase/types";
+
 export interface BaseProduct {
   id: string;
   name: string;
@@ -124,6 +126,7 @@ export type ProductFormData = {
       network_speed?: string;
       sensors?: string[];
       available_colors?: string[];
+      model_variants?: string[];
       card_slot?: boolean;
       nfc?: boolean;
       radio?: boolean;
