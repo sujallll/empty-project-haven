@@ -52,6 +52,7 @@ interface ProductSpecificationsProps {
     name: string;
     brand: string;
     price: number;
+    model_name?: string;
     announced?: string;
     status?: string;
     display_specs: string;
@@ -69,6 +70,7 @@ interface ProductSpecificationsProps {
     camera?: string;
     battery: string;
     battery_type?: string;
+    charging_specs?: string;
     os?: string;
     dimensions?: string;
     weight?: string;
@@ -146,8 +148,9 @@ export function ProductSpecifications({ product }: ProductSpecificationsProps) {
             title="Camera"
             specs={[
               { label: "Main Camera", value: product.camera },
-              { label: "Features", value: product.main_camera_features ? JSON.stringify(product.main_camera_features, null, 2) : undefined },
-              { label: "Video", value: product.main_camera_video ? JSON.stringify(product.main_camera_video, null, 2) : undefined },
+              { label: "Main Camera Features", value: product.main_camera_features ? JSON.stringify(product.main_camera_features, null, 2) : undefined },
+              { label: "Video Recording", value: product.main_camera_video ? JSON.stringify(product.main_camera_video, null, 2) : undefined },
+              { label: "Selfie Camera", value: product.selfie_camera_specs ? JSON.stringify(product.selfie_camera_specs, null, 2) : undefined },
             ]}
           />
         )}
@@ -189,6 +192,10 @@ export function ProductSpecifications({ product }: ProductSpecificationsProps) {
           title="Network"
           specs={[
             { label: "Technology", value: product.network_technology },
+            { label: "2G Bands", value: product.bands_2g },
+            { label: "3G Bands", value: product.bands_3g },
+            { label: "4G Bands", value: product.bands_4g },
+            { label: "5G Bands", value: product.bands_5g },
             { label: "Speed", value: product.network_speed },
           ]}
         />
@@ -201,15 +208,13 @@ export function ProductSpecifications({ product }: ProductSpecificationsProps) {
           ]}
         />
 
-        {product.sensors && (
-          <SpecificationSection
-            title="Features"
-            specs={[
-              { label: "Sensors", value: Array.isArray(product.sensors) ? product.sensors.join(', ') : product.sensors },
-              { label: "Available Colors", value: Array.isArray(product.available_colors) ? product.available_colors.join(', ') : product.available_colors },
-            ]}
-          />
-        )}
+        <SpecificationSection
+          title="Features"
+          specs={[
+            { label: "Sensors", value: product.sensors },
+            { label: "Available Colors", value: product.available_colors },
+          ]}
+        />
       </CardContent>
     </Card>
   );

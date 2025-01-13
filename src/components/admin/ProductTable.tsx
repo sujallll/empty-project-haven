@@ -1,61 +1,116 @@
-import { MobileProduct, LaptopProduct } from "@/types/product";
+import { Button } from "@/components/ui/button";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { ProductImage } from "./ProductImage";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
-export interface ProductTableProps {
-  products: (MobileProduct | LaptopProduct)[];
-  onView?: (product: MobileProduct | LaptopProduct) => void;
-  onEdit?: (product: MobileProduct | LaptopProduct) => void;
-  onAddReview?: (product: MobileProduct | LaptopProduct) => void;
-  onDelete: (id: string) => Promise<void>;
+interface Product {
+  id: string;
+  name: string;
+  brand: string;
+  price: number;
+  image_url?: string;
+  display_specs: string;
+  processor: string;
+  ram: string;
+  storage: string;
+  battery: string;
+  camera?: string;
+  os?: string;
+  chipset?: string;
+  color?: string;
+  graphics?: string;
+  ports?: string;
+  model_name?: string;
+  resolution?: string;
+  screen_size?: string;
+  charging_specs?: string;
 }
 
-export function ProductTable({ products, onView, onEdit, onAddReview, onDelete }: ProductTableProps) {
+interface ProductTableProps {
+  products: Product[];
+  onView: (product: Product) => void;
+  onEdit: (product: Product) => void;
+  onAddReview: (product: Product) => void;
+  onDelete: (id: string) => void;
+}
+
+export function ProductTable({
+  products,
+  onView,
+  onEdit,
+  onAddReview,
+  onDelete,
+}: ProductTableProps) {
   return (
-    <table className="min-w-full divide-y divide-gray-200">
-      <thead className="bg-gray-50">
-        <tr>
-          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-            Product Name
-          </th>
-          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-            Brand
-          </th>
-          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-            Price
-          </th>
-          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-            Actions
-          </th>
-        </tr>
-      </thead>
-      <tbody className="bg-white divide-y divide-gray-200">
-        {products.map((product) => (
-          <tr key={product.id}>
-            <td className="px-6 py-4 whitespace-nowrap">
-              <div className="text-sm text-gray-900">{product.name}</div>
-            </td>
-            <td className="px-6 py-4 whitespace-nowrap">
-              <div className="text-sm text-gray-900">{product.brand}</div>
-            </td>
-            <td className="px-6 py-4 whitespace-nowrap">
-              <div className="text-sm text-gray-900">₹{product.price}</div>
-            </td>
-            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-              <button onClick={() => onView?.(product)} className="text-indigo-600 hover:text-indigo-900">
-                View
-              </button>
-              <button onClick={() => onEdit?.(product)} className="text-indigo-600 hover:text-indigo-900 ml-4">
-                Edit
-              </button>
-              <button onClick={() => onAddReview?.(product)} className="text-indigo-600 hover:text-indigo-900 ml-4">
-                Add Review
-              </button>
-              <button onClick={() => onDelete(product.id)} className="text-red-600 hover:text-red-900 ml-4">
-                Delete
-              </button>
-            </td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
+    <div className="border rounded-md">
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Image</TableHead>
+            <TableHead>Name</TableHead>
+            <TableHead>Brand</TableHead>
+            <TableHead>Price</TableHead>
+            <TableHead className="w-[300px]">Actions</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {products.map((product) => (
+            <TableRow key={product.id}>
+              <TableCell>
+                {product.image_url && (
+                  <div className="w-20 h-20">
+                    <ProductImage imageUrl={product.image_url} productName={product.name} />
+                  </div>
+                )}
+              </TableCell>
+              <TableCell>{product.name}</TableCell>
+              <TableCell>{product.brand}</TableCell>
+              <TableCell>₹{product.price.toLocaleString()}</TableCell>
+              <TableCell>
+                <div className="w-[300px] overflow-x-auto">
+                  <div className="flex items-center gap-2 p-1 pr-4 min-w-max">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => onView(product)}
+                    >
+                      View Details
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => onEdit(product)}
+                    >
+                      Edit
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => onAddReview(product)}
+                    >
+                      Add Review
+                    </Button>
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      onClick={() => onDelete(product.id)}
+                    >
+                      Delete
+                    </Button>
+                  </div>
+                </div>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </div>
   );
 }

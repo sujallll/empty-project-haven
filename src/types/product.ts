@@ -1,5 +1,3 @@
-import { Json } from "@/integrations/supabase/types";
-
 export interface BaseProduct {
   id: string;
   name: string;
@@ -17,112 +15,84 @@ export interface BaseProduct {
   updated_at: string;
   gallery_images: string[] | null;
   model_name: string | null;
-  design_specs?: Record<string, any> | null;
-  display_details?: Record<string, any> | null;
-  performance_specs?: Record<string, any> | null;
-  multimedia_specs?: Record<string, any> | null;
 }
 
 export interface LaptopProduct extends BaseProduct {
   graphics: string | null;
   ports: string | null;
-  connectivity_specs?: Record<string, any> | null;
 }
 
 export interface MobileProduct extends BaseProduct {
+  // Basic Camera
   camera: string;
-  chipset?: string | null;
-  charging_specs?: string | null;
-  resolution?: string | null;
-  screen_size?: string | null;
-  announced?: string | null;
-  status?: string | null;
-  cpu_details?: string | null;
-  gpu_details?: string | null;
-  card_slot?: boolean;
-  memory_type?: string | null;
-  display_type?: string | null;
-  display_protection?: string | null;
-  dimensions?: string | null;
-  weight?: string | null;
-  build_material?: string | null;
-  sim_type?: string | null;
-  protection_rating?: string | null;
-  battery_type?: string | null;
-  battery_charging?: Record<string, any> | null;
-  wlan?: string | null;
-  bluetooth?: string | null;
-  nfc?: boolean;
-  gps?: string | null;
-  usb_type?: string | null;
-  radio?: boolean;
-  infrared?: boolean;
-  network_technology?: string | null;
-  network_speed?: string | null;
-  loudspeaker_type?: string | null;
-  audio_jack?: boolean;
-  sensors?: string[];
-  available_colors?: string[];
-  model_variants?: string[];
-  bands_2g?: string[];
-  bands_3g?: string[];
-  bands_4g?: string[];
-  bands_5g?: string[];
-  display_features?: Record<string, any> | null;
-  camera_details?: Record<string, any> | null;
-  sensor_specs?: Record<string, any> | null;
-  network_specs?: Record<string, any> | null;
-  general_specs?: Record<string, any> | null;
-}
+  
+  // Launch Details
+  announced: string | null;
+  status: string | null;
 
-export type ProductFormData = MobileProduct | LaptopProduct;
+  // Platform
+  cpu_details: string | null;
+  gpu_details: string | null;
+  chipset: string | null;
 
-// Helper function to convert Json to Record<string, any>
-export function convertJsonToRecord(json: Json | null): Record<string, any> | null {
-  if (!json) return null;
-  if (typeof json === 'string') {
-    try {
-      return JSON.parse(json);
-    } catch {
-      return null;
-    }
-  }
-  return json as Record<string, any>;
-}
+  // Memory
+  card_slot: boolean | null;
+  memory_type: string | null;
 
-// Helper function to convert database response to proper product type
-export function convertDatabaseProduct(data: any): MobileProduct | LaptopProduct {
-  const baseProduct = {
-    ...data,
-    design_specs: convertJsonToRecord(data.design_specs),
-    display_details: convertJsonToRecord(data.display_details),
-    performance_specs: convertJsonToRecord(data.performance_specs),
-    multimedia_specs: convertJsonToRecord(data.multimedia_specs),
-  };
+  // Display
+  display_type: string | null;
+  display_size: string | null;
+  display_resolution: string | null;
+  display_protection: string | null;
+  display_features: Record<string, any> | null;
 
-  if ('camera' in data) {
-    return {
-      ...baseProduct,
-      display_features: convertJsonToRecord(data.display_features),
-      camera_details: convertJsonToRecord(data.camera_details),
-      sensor_specs: convertJsonToRecord(data.sensor_specs),
-      network_specs: convertJsonToRecord(data.network_specs),
-      general_specs: convertJsonToRecord(data.general_specs),
-      battery_charging: convertJsonToRecord(data.battery_charging),
-    } as MobileProduct;
-  } else {
-    return {
-      ...baseProduct,
-      connectivity_specs: convertJsonToRecord(data.connectivity_specs),
-    } as LaptopProduct;
-  }
-}
+  // Camera Details
+  main_camera_specs: Record<string, any> | null;
+  main_camera_features: Record<string, any> | null;
+  main_camera_video: Record<string, any> | null;
+  selfie_camera_specs: Record<string, any> | null;
+  selfie_camera_features: Record<string, any> | null;
+  selfie_camera_video: Record<string, any> | null;
 
-// Type guard functions
-export function isMobileProduct(product: ProductFormData): product is MobileProduct {
-  return 'camera' in product;
-}
+  // Body
+  dimensions: string | null;
+  weight: string | null;
+  build_material: string | null;
+  sim_type: string | null;
+  protection_rating: string | null;
 
-export function isLaptopProduct(product: ProductFormData): product is LaptopProduct {
-  return 'graphics' in product;
+  // Battery & Charging
+  battery_type: string | null;
+  battery_charging: Record<string, any> | null;
+  charging_specs: string | null;
+
+  // Communications
+  wlan: string | null;
+  bluetooth: string | null;
+  nfc: boolean | null;
+  gps: string | null;
+  usb_type: string | null;
+  radio: boolean | null;
+  infrared: boolean | null;
+
+  // Network
+  network_technology: string | null;
+  bands_2g: string[] | null;
+  bands_3g: string[] | null;
+  bands_4g: string[] | null;
+  bands_5g: string[] | null;
+  network_speed: string | null;
+
+  // Sound
+  loudspeaker_type: string | null;
+  audio_jack: boolean | null;
+
+  // Features
+  sensors: string[] | null;
+  available_colors: string[] | null;
+  model_variants: string[] | null;
+
+  // Legacy fields
+  resolution: string | null;
+  screen_size: string | null;
 }

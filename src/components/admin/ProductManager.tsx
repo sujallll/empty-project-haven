@@ -7,8 +7,29 @@ import { ProductEditDialog } from "./ProductEditDialog";
 import { ExpertReviewForm } from "./ExpertReviewForm";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { convertDatabaseProduct } from "@/types/product";
-import type { MobileProduct, LaptopProduct } from "@/types/product";
+
+interface Product {
+  id: string;
+  name: string;
+  brand: string;
+  price: number;
+  image_url?: string;
+  display_specs: string;
+  processor: string;
+  ram: string;
+  storage: string;
+  battery: string;
+  camera?: string;
+  os?: string;
+  chipset?: string;
+  color?: string;
+  graphics?: string;
+  ports?: string;
+  model_name?: string;
+  resolution?: string;
+  screen_size?: string;
+  charging_specs?: string;
+}
 
 interface ProductManagerProps {
   productType: 'mobile' | 'laptop';
@@ -16,12 +37,12 @@ interface ProductManagerProps {
 
 export function ProductManager({ productType }: ProductManagerProps) {
   const { toast } = useToast();
-  const [products, setProducts] = useState<(MobileProduct | LaptopProduct)[]>([]);
-  const [selectedProduct, setSelectedProduct] = useState<MobileProduct | LaptopProduct | null>(null);
-  const [editingProduct, setEditingProduct] = useState<MobileProduct | LaptopProduct | null>(null);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [showExpertReview, setShowExpertReview] = useState(false);
-  const [selectedProductForReview, setSelectedProductForReview] = useState<MobileProduct | LaptopProduct | null>(null);
+  const [selectedProductForReview, setSelectedProductForReview] = useState<Product | null>(null);
 
   const fetchProducts = async () => {
     try {
@@ -31,9 +52,7 @@ export function ProductManager({ productType }: ProductManagerProps) {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      
-      const processedData = data?.map(item => convertDatabaseProduct(item));
-      setProducts(processedData || []);
+      setProducts(data || []);
     } catch (error: any) {
       toast({
         variant: "destructive",
@@ -73,15 +92,15 @@ export function ProductManager({ productType }: ProductManagerProps) {
     }
   };
 
-  const handleView = (product: MobileProduct | LaptopProduct) => {
+  const handleView = (product: Product) => {
     setSelectedProduct(product);
   };
 
-  const handleEdit = (product: MobileProduct | LaptopProduct) => {
+  const handleEdit = (product: Product) => {
     setEditingProduct(product);
   };
 
-  const handleAddReview = (product: MobileProduct | LaptopProduct) => {
+  const handleAddReview = (product: Product) => {
     setSelectedProductForReview(product);
     setShowExpertReview(true);
   };
