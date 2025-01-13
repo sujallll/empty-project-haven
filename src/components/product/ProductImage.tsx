@@ -1,0 +1,21 @@
+import { cn } from "@/lib/utils";
+
+interface ProductImageProps {
+  src: string;
+  alt: string;
+  className?: string;
+}
+
+export function ProductImage({ src, alt, className }: ProductImageProps) {
+  return (
+    <img
+      src={src || "/placeholder.svg"}
+      alt={alt}
+      className={cn(
+        "aspect-square object-cover rounded-md",
+        className
+      )}
+      loading="lazy"
+    />
+  );
+}
