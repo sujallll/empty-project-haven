@@ -42,23 +42,12 @@ export interface MobileProduct extends BaseProduct {
   card_slot?: boolean;
   memory_type?: string | null;
   display_type?: string | null;
-  display_size?: string | null;
-  display_resolution?: string | null;
   display_protection?: string | null;
-  display_features?: Record<string, any> | null;
-  main_camera_specs?: Record<string, any> | null;
-  main_camera_features?: Record<string, any> | null;
-  main_camera_video?: Record<string, any> | null;
-  selfie_camera_specs?: Record<string, any> | null;
-  selfie_camera_features?: Record<string, any> | null;
-  selfie_camera_video?: Record<string, any> | null;
   dimensions?: string | null;
   weight?: string | null;
   build_material?: string | null;
   sim_type?: string | null;
   protection_rating?: string | null;
-  battery_type?: string | null;
-  battery_charging?: Record<string, any> | null;
   wlan?: string | null;
   bluetooth?: string | null;
   nfc?: boolean;
@@ -67,20 +56,23 @@ export interface MobileProduct extends BaseProduct {
   radio?: boolean;
   infrared?: boolean;
   network_technology?: string | null;
-  bands_2g?: string[];
-  bands_3g?: string[];
-  bands_4g?: string[];
-  bands_5g?: string[];
   network_speed?: string | null;
   loudspeaker_type?: string | null;
   audio_jack?: boolean;
   sensors?: string[];
   available_colors?: string[];
   model_variants?: string[];
+  bands_2g?: string[];
+  bands_3g?: string[];
+  bands_4g?: string[];
+  bands_5g?: string[];
+  display_features?: Record<string, any> | null;
   camera_details?: Record<string, any> | null;
   sensor_specs?: Record<string, any> | null;
   network_specs?: Record<string, any> | null;
   general_specs?: Record<string, any> | null;
+  battery_type?: string | null;
+  battery_charging?: Record<string, any> | null;
 }
 
 export type ProductFormData = MobileProduct | LaptopProduct;
@@ -105,4 +97,32 @@ export function convertJsonToRecord(json: Json | null): Record<string, any> | nu
     }
   }
   return json as Record<string, any>;
+}
+
+// Helper function to convert database response to proper product type
+export function convertDatabaseProduct(data: any): MobileProduct | LaptopProduct {
+  const baseProduct = {
+    ...data,
+    design_specs: convertJsonToRecord(data.design_specs),
+    display_details: convertJsonToRecord(data.display_details),
+    performance_specs: convertJsonToRecord(data.performance_specs),
+    multimedia_specs: convertJsonToRecord(data.multimedia_specs),
+  };
+
+  if ('camera' in data) {
+    return {
+      ...baseProduct,
+      display_features: convertJsonToRecord(data.display_features),
+      camera_details: convertJsonToRecord(data.camera_details),
+      sensor_specs: convertJsonToRecord(data.sensor_specs),
+      network_specs: convertJsonToRecord(data.network_specs),
+      general_specs: convertJsonToRecord(data.general_specs),
+      battery_charging: convertJsonToRecord(data.battery_charging),
+    } as MobileProduct;
+  } else {
+    return {
+      ...baseProduct,
+      connectivity_specs: convertJsonToRecord(data.connectivity_specs),
+    } as LaptopProduct;
+  }
 }

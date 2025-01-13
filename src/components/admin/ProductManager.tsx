@@ -7,17 +7,8 @@ import { ProductEditDialog } from "./ProductEditDialog";
 import { ExpertReviewForm } from "./ExpertReviewForm";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { BaseProduct } from "@/types/product";
-
-interface Product extends BaseProduct {
-  camera?: string;
-  graphics?: string;
-  ports?: string;
-  chipset?: string;
-  charging_specs?: string;
-  resolution?: string;
-  screen_size?: string;
-}
+import { convertDatabaseProduct } from "@/types/product";
+import type { MobileProduct, LaptopProduct } from "@/types/product";
 
 interface ProductManagerProps {
   productType: 'mobile' | 'laptop';
@@ -25,12 +16,12 @@ interface ProductManagerProps {
 
 export function ProductManager({ productType }: ProductManagerProps) {
   const { toast } = useToast();
-  const [products, setProducts] = useState<Product[]>([]);
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [products, setProducts] = useState<(MobileProduct | LaptopProduct)[]>([]);
+  const [selectedProduct, setSelectedProduct] = useState<MobileProduct | LaptopProduct | null>(null);
+  const [editingProduct, setEditingProduct] = useState<MobileProduct | LaptopProduct | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [showExpertReview, setShowExpertReview] = useState(false);
-  const [selectedProductForReview, setSelectedProductForReview] = useState<Product | null>(null);
+  const [selectedProductForReview, setSelectedProductForReview] = useState<MobileProduct | LaptopProduct | null>(null);
 
   const fetchProducts = async () => {
     try {
@@ -41,24 +32,7 @@ export function ProductManager({ productType }: ProductManagerProps) {
 
       if (error) throw error;
       
-      // Convert JSON fields to Record<string, any>
-      const processedData = data?.map(item => ({
-        ...item,
-        design_specs: convertJsonToRecord(item.design_specs),
-        display_details: convertJsonToRecord(item.display_details),
-        performance_specs: convertJsonToRecord(item.performance_specs),
-        multimedia_specs: convertJsonToRecord(item.multimedia_specs),
-        ...(productType === 'mobile' ? {
-          display_features: convertJsonToRecord(item.display_features),
-          camera_details: convertJsonToRecord(item.camera_details),
-          sensor_specs: convertJsonToRecord(item.sensor_specs),
-          network_specs: convertJsonToRecord(item.network_specs),
-          general_specs: convertJsonToRecord(item.general_specs),
-        } : {
-          connectivity_specs: convertJsonToRecord(item.connectivity_specs),
-        }),
-      })) as (Product)[];
-
+      const processedData = data?.map(item => convertDatabaseProduct(item));
       setProducts(processedData || []);
     } catch (error: any) {
       toast({
@@ -99,15 +73,15 @@ export function ProductManager({ productType }: ProductManagerProps) {
     }
   };
 
-  const handleView = (product: Product) => {
+  const handleView = (product: MobileProduct | LaptopProduct) => {
     setSelectedProduct(product);
   };
 
-  const handleEdit = (product: Product) => {
+  const handleEdit = (product: MobileProduct | LaptopProduct) => {
     setEditingProduct(product);
   };
 
-  const handleAddReview = (product: Product) => {
+  const handleAddReview = (product: MobileProduct | LaptopProduct) => {
     setSelectedProductForReview(product);
     setShowExpertReview(true);
   };
@@ -180,16 +154,4 @@ export function ProductManager({ productType }: ProductManagerProps) {
       </Dialog>
     </div>
   );
-}
-
-function convertJsonToRecord(json: any): Record<string, any> | null {
-  if (!json) return null;
-  if (typeof json === 'string') {
-    try {
-      return JSON.parse(json);
-    } catch {
-      return null;
-    }
-  }
-  return json as Record<string, any>;
 }
