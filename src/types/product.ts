@@ -1,5 +1,7 @@
 import type { Json } from "@/integrations/supabase/types";
 
+type JsonRecord = Record<string, any>;
+
 export interface BaseProduct {
   id: string;
   name: string;
@@ -17,16 +19,16 @@ export interface BaseProduct {
   updated_at: string;
   gallery_images: string[] | null;
   model_name: string | null;
-  design_specs: Record<string, any> | null;
-  display_details: Record<string, any> | null;
-  performance_specs: Record<string, any> | null;
-  multimedia_specs: Record<string, any> | null;
+  design_specs: JsonRecord | null;
+  display_details: JsonRecord | null;
+  performance_specs: JsonRecord | null;
+  multimedia_specs: JsonRecord | null;
 }
 
 export interface LaptopProduct extends BaseProduct {
   graphics: string | null;
   ports: string | null;
-  connectivity_specs: Record<string, any> | null;
+  connectivity_specs: JsonRecord | null;
 }
 
 export interface MobileProduct extends BaseProduct {
@@ -42,20 +44,20 @@ export interface MobileProduct extends BaseProduct {
   display_size: string | null;
   display_resolution: string | null;
   display_protection: string | null;
-  display_features: Record<string, any> | null;
-  main_camera_specs: Record<string, any> | null;
-  main_camera_features: Record<string, any> | null;
-  main_camera_video: Record<string, any> | null;
-  selfie_camera_specs: Record<string, any> | null;
-  selfie_camera_features: Record<string, any> | null;
-  selfie_camera_video: Record<string, any> | null;
+  display_features: JsonRecord | null;
+  main_camera_specs: JsonRecord | null;
+  main_camera_features: JsonRecord | null;
+  main_camera_video: JsonRecord | null;
+  selfie_camera_specs: JsonRecord | null;
+  selfie_camera_features: JsonRecord | null;
+  selfie_camera_video: JsonRecord | null;
   dimensions: string | null;
   weight: string | null;
   build_material: string | null;
   sim_type: string | null;
   protection_rating: string | null;
   battery_type: string | null;
-  battery_charging: Record<string, any> | null;
+  battery_charging: JsonRecord | null;
   charging_specs: string | null;
   wlan: string | null;
   bluetooth: string | null;
@@ -77,10 +79,10 @@ export interface MobileProduct extends BaseProduct {
   model_variants: string[] | null;
   resolution: string | null;
   screen_size: string | null;
-  camera_details: Record<string, any> | null;
-  sensor_specs: Record<string, any> | null;
-  network_specs: Record<string, any> | null;
-  general_specs: Record<string, any> | null;
+  camera_details: JsonRecord | null;
+  sensor_specs: JsonRecord | null;
+  network_specs: JsonRecord | null;
+  general_specs: JsonRecord | null;
 }
 
 export type ProductFormData = {
@@ -98,10 +100,10 @@ export type ProductFormData = {
   color?: string;
   image_url?: string;
   gallery_images?: string[];
-  multimedia_specs?: Record<string, any>;
-  design_specs?: Record<string, any>;
-  display_details?: Record<string, any>;
-  performance_specs?: Record<string, any>;
+  multimedia_specs?: JsonRecord;
+  design_specs?: JsonRecord;
+  display_details?: JsonRecord;
+  performance_specs?: JsonRecord;
 } & (
   | {
       camera: string;
@@ -132,14 +134,36 @@ export type ProductFormData = {
       radio?: boolean;
       infrared?: boolean;
       audio_jack?: boolean;
-      camera_details?: Record<string, any>;
-      sensor_specs?: Record<string, any>;
-      network_specs?: Record<string, any>;
-      general_specs?: Record<string, any>;
+      camera_details?: JsonRecord;
+      sensor_specs?: JsonRecord;
+      network_specs?: JsonRecord;
+      general_specs?: JsonRecord;
+      display_features?: JsonRecord;
+      main_camera_specs?: JsonRecord;
+      main_camera_features?: JsonRecord;
+      main_camera_video?: JsonRecord;
+      selfie_camera_specs?: JsonRecord;
+      selfie_camera_features?: JsonRecord;
+      selfie_camera_video?: JsonRecord;
+      battery_type?: string;
+      battery_charging?: JsonRecord;
+      bands_2g?: string[];
+      bands_3g?: string[];
+      bands_4g?: string[];
+      bands_5g?: string[];
+      loudspeaker_type?: string;
     }
   | {
       graphics?: string;
       ports?: string;
-      connectivity_specs?: Record<string, any>;
+      connectivity_specs?: JsonRecord;
     }
 );
+
+export function isMobileProduct(product: any): product is MobileProduct {
+  return 'camera' in product;
+}
+
+export function isLaptopProduct(product: any): product is LaptopProduct {
+  return 'graphics' in product;
+}

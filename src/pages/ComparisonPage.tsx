@@ -4,22 +4,26 @@ import { CompareSearchBar } from "@/components/product/CompareSearchBar";
 import { useLocation } from "react-router-dom";
 import type { LaptopProduct, MobileProduct } from "@/types/product";
 
-export default function ComparisonPage() {
+interface LocationState {
+  products: (LaptopProduct | MobileProduct)[];
+  type: 'mobile' | 'laptop';
+}
+
+export function ComparisonPage() {
   const location = useLocation();
-  const { state } = location;
-  const products = state?.products as (LaptopProduct | MobileProduct)[];
-  const type = state?.type as 'mobile' | 'laptop';
+  const state = location.state as LocationState;
+
+  if (!state?.products || !state?.type) {
+    return <div>Invalid comparison data</div>;
+  }
 
   return (
     <Layout>
-      <div className="container mx-auto py-8">
-        <h1 className="text-3xl font-bold mb-6">Compare Products</h1>
-        <CompareSearchBar 
-          type={type} 
-          onProductSelect={() => {}} 
-          currentProductId={products?.[0]?.id || ''}
+      <div className="container py-8">
+        <CompareSection 
+          currentProduct={state.products[0]} 
+          type={state.type} 
         />
-        <CompareSection currentProduct={products[0]} type={type} />
       </div>
     </Layout>
   );

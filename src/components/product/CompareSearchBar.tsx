@@ -1,54 +1,83 @@
-import { Input } from "@/components/ui/input";
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import type { MobileProduct, LaptopProduct } from "@/types/product";
+import { Input } from "@/components/ui/input";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Loader2 } from "lucide-react";
+import type { LaptopProduct, MobileProduct } from "@/types/product";
 
 interface CompareSearchBarProps {
+  onProductSelect: (product: LaptopProduct | MobileProduct) => void;
   type: 'mobile' | 'laptop';
-  onProductSelect: (product: MobileProduct | LaptopProduct) => void;
-  currentProductId: string;
 }
 
-export function CompareSearchBar({ type, onProductSelect, currentProductId }: CompareSearchBarProps) {
-  const { data: products = [], isLoading } = useQuery({
-    queryKey: ['products', type],
+export function CompareSearchBar({ onProductSelect, type }: CompareSearchBarProps) {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [showResults, setShowResults] = useState(false);
+
+  const { data: products = [] } = useQuery({
+    queryKey: ['search-products', type, searchQuery],
     queryFn: async () => {
+      if (!searchQuery) return [];
+
       const tableName = type === 'laptop' ? 'laptops' : 'mobile_products';
       const { data, error } = await supabase
         .from(tableName)
         .select('*')
-        .neq('id', currentProductId)
-        .limit(10);
+        .ilike('name', `%${searchQuery}%`)
+        .limit(5);
 
       if (error) throw error;
-      return data;
+      return data as (LaptopProduct | MobileProduct)[];
     },
+    enabled: searchQuery.length > 0,
   });
 
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center py-4">
-        <Loader2 className="animate-spin" />
-      </div>
-    );
-  }
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+    setShowResults(true);
+  };
+
+  const handleProductSelect = (product: LaptopProduct | MobileProduct) => {
+    onProductSelect(product);
+    setSearchQuery("");
+    setShowResults(false);
+  };
 
   return (
-    <div className="space-y-4">
-      <h3 className="text-lg font-semibold">Compare Products</h3>
-      <ScrollArea className="h-40">
-        <div className="grid grid-cols-1 gap-4">
-          {products.map((product) => (
-            <div key={product.id} className="flex items-center justify-between p-4 border rounded">
-              <span>{product.name}</span>
-              <Button onClick={() => onProductSelect(product)}>Select</Button>
-            </div>
-          ))}
-        </div>
-      </ScrollArea>
+    <div className="relative w-full">
+      <Input
+        type="text"
+        placeholder="Search products to compare..."
+        value={searchQuery}
+        onChange={handleInputChange}
+        className="w-full"
+      />
+
+      {showResults && searchQuery && (
+        <Card className="absolute top-full left-0 right-0 mt-2 z-50">
+          <CardContent className="p-2">
+            {products.length > 0 ? (
+              <div className="space-y-2">
+                {products.map((product) => (
+                  <Button
+                    key={product.id}
+                    variant="ghost"
+                    className="w-full justify-start"
+                    onClick={() => handleProductSelect(product)}
+                  >
+                    {product.name}
+                  </Button>
+                ))}
+              </div>
+            ) : (
+              <p className="text-sm text-muted-foreground p-2">
+                No products found
+              </p>
+            )}
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 }
