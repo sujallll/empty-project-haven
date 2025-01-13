@@ -7,28 +7,16 @@ import { ProductEditDialog } from "./ProductEditDialog";
 import { ExpertReviewForm } from "./ExpertReviewForm";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { BaseProduct } from "@/types/product";
 
-interface Product {
-  id: string;
-  name: string;
-  brand: string;
-  price: number;
-  image_url?: string;
-  display_specs: string;
-  processor: string;
-  ram: string;
-  storage: string;
-  battery: string;
+interface Product extends BaseProduct {
   camera?: string;
-  os?: string;
-  chipset?: string;
-  color?: string;
   graphics?: string;
   ports?: string;
-  model_name?: string;
+  chipset?: string;
+  charging_specs?: string;
   resolution?: string;
   screen_size?: string;
-  charging_specs?: string;
 }
 
 interface ProductManagerProps {
@@ -52,7 +40,26 @@ export function ProductManager({ productType }: ProductManagerProps) {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      setProducts(data || []);
+      
+      // Convert JSON fields to Record<string, any>
+      const processedData = data?.map(item => ({
+        ...item,
+        design_specs: convertJsonToRecord(item.design_specs),
+        display_details: convertJsonToRecord(item.display_details),
+        performance_specs: convertJsonToRecord(item.performance_specs),
+        multimedia_specs: convertJsonToRecord(item.multimedia_specs),
+        ...(productType === 'mobile' ? {
+          display_features: convertJsonToRecord(item.display_features),
+          camera_details: convertJsonToRecord(item.camera_details),
+          sensor_specs: convertJsonToRecord(item.sensor_specs),
+          network_specs: convertJsonToRecord(item.network_specs),
+          general_specs: convertJsonToRecord(item.general_specs),
+        } : {
+          connectivity_specs: convertJsonToRecord(item.connectivity_specs),
+        }),
+      })) as (Product)[];
+
+      setProducts(processedData || []);
     } catch (error: any) {
       toast({
         variant: "destructive",
@@ -173,4 +180,16 @@ export function ProductManager({ productType }: ProductManagerProps) {
       </Dialog>
     </div>
   );
+}
+
+function convertJsonToRecord(json: any): Record<string, any> | null {
+  if (!json) return null;
+  if (typeof json === 'string') {
+    try {
+      return JSON.parse(json);
+    } catch {
+      return null;
+    }
+  }
+  return json as Record<string, any>;
 }

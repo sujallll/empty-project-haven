@@ -85,8 +85,6 @@ export interface MobileProduct extends BaseProduct {
 
 export type ProductFormData = MobileProduct | LaptopProduct;
 
-export type ProductType = 'mobile' | 'laptop';
-
 // Type guard functions
 export function isMobileProduct(product: ProductFormData): product is MobileProduct {
   return 'camera' in product;
