@@ -15,16 +15,16 @@ export interface BaseProduct {
   updated_at: string;
   gallery_images: string[] | null;
   model_name: string | null;
+  design_specs: Record<string, any> | null;
+  display_details: Record<string, any> | null;
+  performance_specs: Record<string, any> | null;
+  multimedia_specs: Record<string, any> | null;
 }
 
 export interface LaptopProduct extends BaseProduct {
   graphics: string | null;
   ports: string | null;
   connectivity_specs: Record<string, any> | null;
-  design_specs: Record<string, any> | null;
-  display_details: Record<string, any> | null;
-  performance_specs: Record<string, any> | null;
-  multimedia_specs: Record<string, any> | null;
 }
 
 export interface MobileProduct extends BaseProduct {
@@ -79,8 +79,64 @@ export interface MobileProduct extends BaseProduct {
   sensor_specs: Record<string, any> | null;
   network_specs: Record<string, any> | null;
   general_specs: Record<string, any> | null;
-  design_specs: Record<string, any> | null;
-  display_details: Record<string, any> | null;
-  performance_specs: Record<string, any> | null;
-  multimedia_specs: Record<string, any> | null;
 }
+
+export type ProductFormData = {
+  id?: string;
+  name: string;
+  brand: string;
+  model_name?: string;
+  price: number;
+  display_specs: string;
+  processor: string;
+  ram: string;
+  storage: string;
+  battery: string;
+  os?: string;
+  color?: string;
+  image_url?: string;
+  gallery_images?: string[];
+  multimedia_specs?: Record<string, any>;
+  design_specs?: Record<string, any>;
+  display_details?: Record<string, any>;
+  performance_specs?: Record<string, any>;
+} & (
+  | {
+      camera: string;
+      chipset?: string;
+      charging_specs?: string;
+      resolution?: string;
+      screen_size?: string;
+      announced?: string;
+      status?: string;
+      memory_type?: string;
+      display_type?: string;
+      display_protection?: string;
+      dimensions?: string;
+      weight?: string;
+      build_material?: string;
+      sim_type?: string;
+      wlan?: string;
+      bluetooth?: string;
+      gps?: string;
+      usb_type?: string;
+      network_technology?: string;
+      network_speed?: string;
+      sensors?: string[];
+      available_colors?: string[];
+      card_slot?: boolean;
+      nfc?: boolean;
+      radio?: boolean;
+      infrared?: boolean;
+      audio_jack?: boolean;
+      camera_details?: Record<string, any>;
+      sensor_specs?: Record<string, any>;
+      network_specs?: Record<string, any>;
+      general_specs?: Record<string, any>;
+    }
+  | {
+      graphics?: string;
+      ports?: string;
+      connectivity_specs?: Record<string, any>;
+    }
+);
