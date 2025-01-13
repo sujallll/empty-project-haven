@@ -1,5 +1,5 @@
 import { ProductImage } from "./ProductImage";
-import { MobileProduct, LaptopProduct } from "@/types/product";
+import { MobileProduct, LaptopProduct, isMobileProduct, isLaptopProduct } from "@/types/product";
 
 interface ProductContentProps {
   product: MobileProduct | LaptopProduct;
@@ -20,16 +20,16 @@ export function ProductContent({ product, type }: ProductContentProps) {
           <li>RAM: {product.ram}</li>
           <li>Storage: {product.storage}</li>
           <li>Battery: {product.battery}</li>
-          {type === 'mobile' && (
+          {isMobileProduct(product) && (
             <>
               <li>Camera: {product.camera}</li>
-              <li>Chipset: {product.chipset}</li>
+              {product.chipset && <li>Chipset: {product.chipset}</li>}
             </>
           )}
-          {type === 'laptop' && (
+          {isLaptopProduct(product) && (
             <>
-              <li>Graphics: {product.graphics}</li>
-              <li>Ports: {product.ports}</li>
+              {product.graphics && <li>Graphics: {product.graphics}</li>}
+              {product.ports && <li>Ports: {product.ports}</li>}
             </>
           )}
         </ul>

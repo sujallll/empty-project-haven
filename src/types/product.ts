@@ -1,3 +1,5 @@
+import { Json } from "@/integrations/supabase/types";
+
 export interface BaseProduct {
   id: string;
   name: string;
@@ -82,3 +84,14 @@ export interface MobileProduct extends BaseProduct {
 }
 
 export type ProductFormData = MobileProduct | LaptopProduct;
+
+export type ProductType = 'mobile' | 'laptop';
+
+// Type guard functions
+export function isMobileProduct(product: ProductFormData): product is MobileProduct {
+  return 'camera' in product;
+}
+
+export function isLaptopProduct(product: ProductFormData): product is LaptopProduct {
+  return 'graphics' in product;
+}

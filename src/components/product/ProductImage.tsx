@@ -8,14 +8,13 @@ interface ProductImageProps {
 
 export function ProductImage({ src, alt, className }: ProductImageProps) {
   return (
-    <img
-      src={src || "/placeholder.svg"}
-      alt={alt}
-      className={cn(
-        "aspect-square object-cover rounded-md",
-        className
-      )}
-      loading="lazy"
-    />
+    <div className={cn("relative aspect-square", className)}>
+      <img
+        src={src || "/placeholder.svg"}
+        alt={alt}
+        className="object-contain w-full h-full"
+        loading="lazy"
+      />
+    </div>
   );
 }
