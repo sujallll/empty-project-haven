@@ -1,116 +1,65 @@
+import { ProductImage } from "@/components/product/ProductImage";
 import { Button } from "@/components/ui/button";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { ProductImage } from "./ProductImage";
-import { ScrollArea } from "@/components/ui/scroll-area";
-
-interface Product {
-  id: string;
-  name: string;
-  brand: string;
-  price: number;
-  image_url?: string;
-  display_specs: string;
-  processor: string;
-  ram: string;
-  storage: string;
-  battery: string;
-  camera?: string;
-  os?: string;
-  chipset?: string;
-  color?: string;
-  graphics?: string;
-  ports?: string;
-  model_name?: string;
-  resolution?: string;
-  screen_size?: string;
-  charging_specs?: string;
-}
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Pencil, Trash2 } from "lucide-react";
+import type { MobileProduct, LaptopProduct } from "@/types/product";
 
 interface ProductTableProps {
-  products: Product[];
-  onView: (product: Product) => void;
-  onEdit: (product: Product) => void;
-  onAddReview: (product: Product) => void;
-  onDelete: (id: string) => void;
+  products: (MobileProduct | LaptopProduct)[];
+  onEdit: (product: MobileProduct | LaptopProduct) => void;
+  onDelete: (productId: string) => void;
 }
 
-export function ProductTable({
-  products,
-  onView,
-  onEdit,
-  onAddReview,
-  onDelete,
-}: ProductTableProps) {
+export function ProductTable({ products, onEdit, onDelete }: ProductTableProps) {
   return (
-    <div className="border rounded-md">
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Image</TableHead>
-            <TableHead>Name</TableHead>
-            <TableHead>Brand</TableHead>
-            <TableHead>Price</TableHead>
-            <TableHead className="w-[300px]">Actions</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {products.map((product) => (
-            <TableRow key={product.id}>
-              <TableCell>
-                {product.image_url && (
-                  <div className="w-20 h-20">
-                    <ProductImage imageUrl={product.image_url} productName={product.name} />
-                  </div>
-                )}
-              </TableCell>
-              <TableCell>{product.name}</TableCell>
-              <TableCell>{product.brand}</TableCell>
-              <TableCell>₹{product.price.toLocaleString()}</TableCell>
-              <TableCell>
-                <div className="w-[300px] overflow-x-auto">
-                  <div className="flex items-center gap-2 p-1 pr-4 min-w-max">
+    <div className="space-y-4">
+      <div className="rounded-md border">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Image</TableHead>
+              <TableHead>Name</TableHead>
+              <TableHead>Brand</TableHead>
+              <TableHead>Price</TableHead>
+              <TableHead>Actions</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {products.map((product) => (
+              <TableRow key={product.id}>
+                <TableCell>
+                  <ProductImage
+                    src={product.image_url}
+                    alt={product.name}
+                    className="w-16 h-16"
+                  />
+                </TableCell>
+                <TableCell>{product.name}</TableCell>
+                <TableCell>{product.brand}</TableCell>
+                <TableCell>₹{product.price.toLocaleString()}</TableCell>
+                <TableCell>
+                  <div className="flex items-center gap-2">
                     <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => onView(product)}
-                    >
-                      View Details
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
+                      variant="ghost"
+                      size="icon"
                       onClick={() => onEdit(product)}
                     >
-                      Edit
+                      <Pencil className="h-4 w-4" />
                     </Button>
                     <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => onAddReview(product)}
-                    >
-                      Add Review
-                    </Button>
-                    <Button
-                      variant="destructive"
-                      size="sm"
+                      variant="ghost"
+                      size="icon"
                       onClick={() => onDelete(product.id)}
                     >
-                      Delete
+                      <Trash2 className="h-4 w-4" />
                     </Button>
                   </div>
-                </div>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
     </div>
   );
 }

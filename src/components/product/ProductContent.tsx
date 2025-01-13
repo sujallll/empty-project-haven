@@ -4,18 +4,23 @@ import { MobileProduct, LaptopProduct, isMobileProduct, isLaptopProduct } from "
 interface ProductContentProps {
   product: MobileProduct | LaptopProduct;
   type: 'mobile' | 'laptop';
+  activeSection?: string;
 }
 
-export function ProductContent({ product, type }: ProductContentProps) {
+export function ProductContent({ product, type, activeSection }: ProductContentProps) {
   return (
-    <div className="flex flex-col">
-      <ProductImage src={product.image_url || ''} alt={product.name} className="w-full h-64" />
-      <h2 className="text-xl font-semibold mt-4">{product.name}</h2>
-      <p className="text-gray-600">{product.brand}</p>
-      <p className="text-lg font-bold">₹{product.price.toLocaleString()}</p>
-      <div className="mt-4">
-        <h3 className="text-lg font-semibold">Specifications</h3>
-        <ul className="list-disc list-inside">
+    <div className="grid gap-6 md:grid-cols-2">
+      <ProductImage
+        src={product.image_url}
+        alt={product.name}
+        className="w-full max-w-md mx-auto"
+      />
+      <div className="space-y-4">
+        <h1 className="text-2xl font-bold">{product.name}</h1>
+        <ul className="space-y-2">
+          <li>Brand: {product.brand}</li>
+          <li>Price: ₹{product.price.toLocaleString()}</li>
+          <li>Display: {product.display_specs}</li>
           <li>Processor: {product.processor}</li>
           <li>RAM: {product.ram}</li>
           <li>Storage: {product.storage}</li>
