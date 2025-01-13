@@ -95,3 +95,16 @@ export function isMobileProduct(product: ProductFormData): product is MobileProd
 export function isLaptopProduct(product: ProductFormData): product is LaptopProduct {
   return 'graphics' in product;
 }
+
+// Helper function to convert Json to Record<string, any>
+export function convertJsonToRecord(json: Json | null): Record<string, any> | null {
+  if (!json) return null;
+  if (typeof json === 'string') {
+    try {
+      return JSON.parse(json);
+    } catch {
+      return null;
+    }
+  }
+  return json as Record<string, any>;
+}

@@ -69,8 +69,29 @@ export default function GadgetsPage() {
       
       if (error) throw error;
       
+      // Convert Json fields to Record<string, any>
+      const processedData = data?.map(item => ({
+        ...item,
+        display_features: convertJsonToRecord(item.display_features),
+        battery_charging: convertJsonToRecord(item.battery_charging),
+        main_camera_specs: convertJsonToRecord(item.main_camera_specs),
+        main_camera_features: convertJsonToRecord(item.main_camera_features),
+        main_camera_video: convertJsonToRecord(item.main_camera_video),
+        selfie_camera_specs: convertJsonToRecord(item.selfie_camera_specs),
+        selfie_camera_features: convertJsonToRecord(item.selfie_camera_features),
+        selfie_camera_video: convertJsonToRecord(item.selfie_camera_video),
+        camera_details: convertJsonToRecord(item.camera_details),
+        sensor_specs: convertJsonToRecord(item.sensor_specs),
+        network_specs: convertJsonToRecord(item.network_specs),
+        general_specs: convertJsonToRecord(item.general_specs),
+        design_specs: convertJsonToRecord(item.design_specs),
+        display_details: convertJsonToRecord(item.display_details),
+        performance_specs: convertJsonToRecord(item.performance_specs),
+        multimedia_specs: convertJsonToRecord(item.multimedia_specs),
+      })) as MobileProduct[];
+      
       return {
-        data: data || [],
+        data: processedData || [],
         nextPage: data && data.length === ITEMS_PER_PAGE ? pageParam + 1 : undefined,
         totalCount: count
       };
@@ -99,8 +120,18 @@ export default function GadgetsPage() {
       
       if (error) throw error;
       
+      // Convert Json fields to Record<string, any>
+      const processedData = data?.map(item => ({
+        ...item,
+        connectivity_specs: convertJsonToRecord(item.connectivity_specs),
+        design_specs: convertJsonToRecord(item.design_specs),
+        display_details: convertJsonToRecord(item.display_details),
+        performance_specs: convertJsonToRecord(item.performance_specs),
+        multimedia_specs: convertJsonToRecord(item.multimedia_specs),
+      })) as LaptopProduct[];
+      
       return {
-        data: data || [],
+        data: processedData || [],
         nextPage: data && data.length === ITEMS_PER_PAGE ? pageParam + 1 : undefined,
         totalCount: count
       };
@@ -109,15 +140,11 @@ export default function GadgetsPage() {
     initialPageParam: 0
   });
 
-  // Flatten the pages data
-  const mobileProducts = mobileData?.pages.flatMap(page => page.data) || [];
-  const laptops = laptopData?.pages.flatMap(page => page.data) || [];
-
   const ProductGrids = () => (
     <div className="lg:col-span-8">
       {subcategory === "MOBILE" && (
         <MobileProductList 
-          products={mobileProducts}
+          products={mobileData?.pages.flatMap(page => page.data) || []}
           onLoadMore={fetchNextMobile}
           hasMore={hasNextMobile}
           isLoading={isFetchingNextMobile}
@@ -125,7 +152,7 @@ export default function GadgetsPage() {
       )}
       {subcategory === "LAPTOPS" && (
         <LaptopProductGrid 
-          products={laptops}
+          products={laptopData?.pages.flatMap(page => page.data) || []}
           onLoadMore={fetchNextLaptop}
           hasMore={hasNextLaptop}
           isLoading={isFetchingNextLaptop}
@@ -152,4 +179,16 @@ export default function GadgetsPage() {
       </div>
     </CategoryPageLayout>
   );
+}
+
+function convertJsonToRecord(json: Json | null): Record<string, any> | null {
+  if (!json) return null;
+  if (typeof json === 'string') {
+    try {
+      return JSON.parse(json);
+    } catch {
+      return null;
+    }
+  }
+  return json as Record<string, any>;
 }
