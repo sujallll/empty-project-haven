@@ -9,119 +9,603 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      files: {
+      blogs: {
         Row: {
+          author: string
+          average_rating: number | null
+          category: string
+          content: string
           created_at: string | null
-          file_name: string
-          file_path: string
-          file_size: number | null
-          file_type: string
+          featured: boolean | null
+          featured_in_category: boolean | null
           id: string
-          submission_id: string | null
+          image_url: string | null
+          meta_description: string | null
+          meta_keywords: string | null
+          meta_title: string | null
+          popular: boolean | null
+          popular_in_entertainment: boolean | null
+          popular_in_gadgets: boolean | null
+          popular_in_games: boolean | null
+          popular_in_stocks: boolean | null
+          popular_in_tech: boolean | null
+          share_count: number | null
+          slug: string
+          subcategory: string | null
+          title: string
+          updated_at: string | null
+          view_count: number | null
         }
         Insert: {
+          author: string
+          average_rating?: number | null
+          category: string
+          content: string
           created_at?: string | null
-          file_name: string
-          file_path: string
-          file_size?: number | null
-          file_type: string
+          featured?: boolean | null
+          featured_in_category?: boolean | null
           id?: string
-          submission_id?: string | null
+          image_url?: string | null
+          meta_description?: string | null
+          meta_keywords?: string | null
+          meta_title?: string | null
+          popular?: boolean | null
+          popular_in_entertainment?: boolean | null
+          popular_in_gadgets?: boolean | null
+          popular_in_games?: boolean | null
+          popular_in_stocks?: boolean | null
+          popular_in_tech?: boolean | null
+          share_count?: number | null
+          slug: string
+          subcategory?: string | null
+          title: string
+          updated_at?: string | null
+          view_count?: number | null
         }
         Update: {
+          author?: string
+          average_rating?: number | null
+          category?: string
+          content?: string
           created_at?: string | null
-          file_name?: string
-          file_path?: string
-          file_size?: number | null
-          file_type?: string
+          featured?: boolean | null
+          featured_in_category?: boolean | null
           id?: string
-          submission_id?: string | null
+          image_url?: string | null
+          meta_description?: string | null
+          meta_keywords?: string | null
+          meta_title?: string | null
+          popular?: boolean | null
+          popular_in_entertainment?: boolean | null
+          popular_in_gadgets?: boolean | null
+          popular_in_games?: boolean | null
+          popular_in_stocks?: boolean | null
+          popular_in_tech?: boolean | null
+          share_count?: number | null
+          slug?: string
+          subcategory?: string | null
+          title?: string
+          updated_at?: string | null
+          view_count?: number | null
+        }
+        Relationships: []
+      }
+      comments: {
+        Row: {
+          blog_id: string
+          content: string
+          created_at: string | null
+          id: string
+          parent_id: string | null
+          updated_at: string | null
+          upvotes: number | null
+          user_name: string
+        }
+        Insert: {
+          blog_id: string
+          content: string
+          created_at?: string | null
+          id?: string
+          parent_id?: string | null
+          updated_at?: string | null
+          upvotes?: number | null
+          user_name: string
+        }
+        Update: {
+          blog_id?: string
+          content?: string
+          created_at?: string | null
+          id?: string
+          parent_id?: string | null
+          updated_at?: string | null
+          upvotes?: number | null
+          user_name?: string
         }
         Relationships: [
           {
-            foreignKeyName: "files_submission_id_fkey"
-            columns: ["submission_id"]
+            foreignKeyName: "comments_blog_id_fkey"
+            columns: ["blog_id"]
             isOneToOne: false
-            referencedRelation: "submissions"
+            referencedRelation: "blogs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "comments_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "comments"
             referencedColumns: ["id"]
           },
         ]
       }
-      master_templates: {
+      expert_reviews: {
         Row: {
+          author: string
+          cons: string[]
           created_at: string | null
-          file_path: string
+          date: string | null
           id: string
-          is_active: boolean | null
+          product_id: string
+          pros: string[]
+          rating: number
+          summary: string
+          updated_at: string | null
+          verdict: string
+        }
+        Insert: {
+          author: string
+          cons: string[]
+          created_at?: string | null
+          date?: string | null
+          id?: string
+          product_id: string
+          pros: string[]
+          rating: number
+          summary: string
+          updated_at?: string | null
+          verdict: string
+        }
+        Update: {
+          author?: string
+          cons?: string[]
+          created_at?: string | null
+          date?: string | null
+          id?: string
+          product_id?: string
+          pros?: string[]
+          rating?: number
+          summary?: string
+          updated_at?: string | null
+          verdict?: string
+        }
+        Relationships: []
+      }
+      laptops: {
+        Row: {
+          battery: string
+          brand: string
+          color: string | null
+          connectivity_specs: Json | null
+          created_at: string | null
+          design_specs: Json | null
+          display_details: Json | null
+          display_specs: string
+          gallery_images: string[] | null
+          graphics: string | null
+          id: string
+          image_url: string | null
+          model_name: string | null
+          multimedia_specs: Json | null
           name: string
+          os: string | null
+          performance_specs: Json | null
+          ports: string | null
+          price: number
+          processor: string
+          ram: string
+          storage: string
           updated_at: string | null
         }
         Insert: {
+          battery: string
+          brand: string
+          color?: string | null
+          connectivity_specs?: Json | null
           created_at?: string | null
-          file_path: string
+          design_specs?: Json | null
+          display_details?: Json | null
+          display_specs: string
+          gallery_images?: string[] | null
+          graphics?: string | null
           id?: string
-          is_active?: boolean | null
+          image_url?: string | null
+          model_name?: string | null
+          multimedia_specs?: Json | null
           name: string
+          os?: string | null
+          performance_specs?: Json | null
+          ports?: string | null
+          price: number
+          processor: string
+          ram: string
+          storage: string
           updated_at?: string | null
         }
         Update: {
+          battery?: string
+          brand?: string
+          color?: string | null
+          connectivity_specs?: Json | null
           created_at?: string | null
-          file_path?: string
+          design_specs?: Json | null
+          display_details?: Json | null
+          display_specs?: string
+          gallery_images?: string[] | null
+          graphics?: string | null
           id?: string
-          is_active?: boolean | null
+          image_url?: string | null
+          model_name?: string | null
+          multimedia_specs?: Json | null
           name?: string
+          os?: string | null
+          performance_specs?: Json | null
+          ports?: string | null
+          price?: number
+          processor?: string
+          ram?: string
+          storage?: string
           updated_at?: string | null
         }
         Relationships: []
       }
-      submissions: {
+      mobile_products: {
+        Row: {
+          announced: string | null
+          audio_jack: boolean | null
+          available_colors: string[] | null
+          bands_2g: string[] | null
+          bands_3g: string[] | null
+          bands_4g: string[] | null
+          bands_5g: string[] | null
+          battery: string
+          battery_charging: Json | null
+          battery_type: string | null
+          bluetooth: string | null
+          brand: string | null
+          build_material: string | null
+          camera: string
+          camera_details: Json | null
+          card_slot: boolean | null
+          charging_specs: string | null
+          chipset: string | null
+          color: string | null
+          cpu_details: string | null
+          created_at: string | null
+          design_specs: Json | null
+          dimensions: string | null
+          display_details: Json | null
+          display_features: Json | null
+          display_protection: string | null
+          display_resolution: string | null
+          display_size: string | null
+          display_specs: string
+          display_type: string | null
+          gallery_images: string[] | null
+          general_specs: Json | null
+          gps: string | null
+          gpu_details: string | null
+          id: string
+          image_url: string | null
+          infrared: boolean | null
+          loudspeaker_type: string | null
+          main_camera_features: Json | null
+          main_camera_specs: Json | null
+          main_camera_video: Json | null
+          memory_type: string | null
+          model_name: string | null
+          model_variants: string[] | null
+          multimedia_specs: Json | null
+          name: string
+          network_specs: Json | null
+          network_speed: string | null
+          network_technology: string | null
+          nfc: boolean | null
+          os: string | null
+          performance_specs: Json | null
+          price: number
+          processor: string
+          protection_rating: string | null
+          radio: boolean | null
+          ram: string | null
+          resolution: string | null
+          screen_size: string | null
+          selfie_camera_features: Json | null
+          selfie_camera_specs: Json | null
+          selfie_camera_video: Json | null
+          sensor_specs: Json | null
+          sensors: string[] | null
+          sim_type: string | null
+          status: string | null
+          storage: string | null
+          updated_at: string | null
+          usb_type: string | null
+          weight: string | null
+          wlan: string | null
+        }
+        Insert: {
+          announced?: string | null
+          audio_jack?: boolean | null
+          available_colors?: string[] | null
+          bands_2g?: string[] | null
+          bands_3g?: string[] | null
+          bands_4g?: string[] | null
+          bands_5g?: string[] | null
+          battery: string
+          battery_charging?: Json | null
+          battery_type?: string | null
+          bluetooth?: string | null
+          brand?: string | null
+          build_material?: string | null
+          camera: string
+          camera_details?: Json | null
+          card_slot?: boolean | null
+          charging_specs?: string | null
+          chipset?: string | null
+          color?: string | null
+          cpu_details?: string | null
+          created_at?: string | null
+          design_specs?: Json | null
+          dimensions?: string | null
+          display_details?: Json | null
+          display_features?: Json | null
+          display_protection?: string | null
+          display_resolution?: string | null
+          display_size?: string | null
+          display_specs: string
+          display_type?: string | null
+          gallery_images?: string[] | null
+          general_specs?: Json | null
+          gps?: string | null
+          gpu_details?: string | null
+          id?: string
+          image_url?: string | null
+          infrared?: boolean | null
+          loudspeaker_type?: string | null
+          main_camera_features?: Json | null
+          main_camera_specs?: Json | null
+          main_camera_video?: Json | null
+          memory_type?: string | null
+          model_name?: string | null
+          model_variants?: string[] | null
+          multimedia_specs?: Json | null
+          name: string
+          network_specs?: Json | null
+          network_speed?: string | null
+          network_technology?: string | null
+          nfc?: boolean | null
+          os?: string | null
+          performance_specs?: Json | null
+          price: number
+          processor: string
+          protection_rating?: string | null
+          radio?: boolean | null
+          ram?: string | null
+          resolution?: string | null
+          screen_size?: string | null
+          selfie_camera_features?: Json | null
+          selfie_camera_specs?: Json | null
+          selfie_camera_video?: Json | null
+          sensor_specs?: Json | null
+          sensors?: string[] | null
+          sim_type?: string | null
+          status?: string | null
+          storage?: string | null
+          updated_at?: string | null
+          usb_type?: string | null
+          weight?: string | null
+          wlan?: string | null
+        }
+        Update: {
+          announced?: string | null
+          audio_jack?: boolean | null
+          available_colors?: string[] | null
+          bands_2g?: string[] | null
+          bands_3g?: string[] | null
+          bands_4g?: string[] | null
+          bands_5g?: string[] | null
+          battery?: string
+          battery_charging?: Json | null
+          battery_type?: string | null
+          bluetooth?: string | null
+          brand?: string | null
+          build_material?: string | null
+          camera?: string
+          camera_details?: Json | null
+          card_slot?: boolean | null
+          charging_specs?: string | null
+          chipset?: string | null
+          color?: string | null
+          cpu_details?: string | null
+          created_at?: string | null
+          design_specs?: Json | null
+          dimensions?: string | null
+          display_details?: Json | null
+          display_features?: Json | null
+          display_protection?: string | null
+          display_resolution?: string | null
+          display_size?: string | null
+          display_specs?: string
+          display_type?: string | null
+          gallery_images?: string[] | null
+          general_specs?: Json | null
+          gps?: string | null
+          gpu_details?: string | null
+          id?: string
+          image_url?: string | null
+          infrared?: boolean | null
+          loudspeaker_type?: string | null
+          main_camera_features?: Json | null
+          main_camera_specs?: Json | null
+          main_camera_video?: Json | null
+          memory_type?: string | null
+          model_name?: string | null
+          model_variants?: string[] | null
+          multimedia_specs?: Json | null
+          name?: string
+          network_specs?: Json | null
+          network_speed?: string | null
+          network_technology?: string | null
+          nfc?: boolean | null
+          os?: string | null
+          performance_specs?: Json | null
+          price?: number
+          processor?: string
+          protection_rating?: string | null
+          radio?: boolean | null
+          ram?: string | null
+          resolution?: string | null
+          screen_size?: string | null
+          selfie_camera_features?: Json | null
+          selfie_camera_specs?: Json | null
+          selfie_camera_video?: Json | null
+          sensor_specs?: Json | null
+          sensors?: string[] | null
+          sim_type?: string | null
+          status?: string | null
+          storage?: string | null
+          updated_at?: string | null
+          usb_type?: string | null
+          weight?: string | null
+          wlan?: string | null
+        }
+        Relationships: []
+      }
+      product_ratings: {
         Row: {
           created_at: string | null
-          date: string
-          email: string
-          facility: string
           id: string
-          phone: string | null
-          serial_number: string
-          status: Database["public"]["Enums"]["submission_status"] | null
-          technician: string
+          product_id: string
+          rating: number
           updated_at: string | null
         }
         Insert: {
           created_at?: string | null
-          date: string
-          email: string
-          facility: string
           id?: string
-          phone?: string | null
-          serial_number: string
-          status?: Database["public"]["Enums"]["submission_status"] | null
-          technician: string
+          product_id: string
+          rating: number
           updated_at?: string | null
         }
         Update: {
           created_at?: string | null
-          date?: string
-          email?: string
-          facility?: string
           id?: string
-          phone?: string | null
-          serial_number?: string
-          status?: Database["public"]["Enums"]["submission_status"] | null
-          technician?: string
+          product_id?: string
+          rating?: number
           updated_at?: string | null
         }
         Relationships: []
+      }
+      product_reviews: {
+        Row: {
+          created_at: string | null
+          id: string
+          product_id: string
+          rating: number
+          review_text: string | null
+          updated_at: string | null
+          user_name: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          product_id: string
+          rating: number
+          review_text?: string | null
+          updated_at?: string | null
+          user_name: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          product_id?: string
+          rating?: number
+          review_text?: string | null
+          updated_at?: string | null
+          user_name?: string
+        }
+        Relationships: []
+      }
+      ratings: {
+        Row: {
+          blog_id: string
+          created_at: string | null
+          id: string
+          rating: number
+          updated_at: string | null
+        }
+        Insert: {
+          blog_id: string
+          created_at?: string | null
+          id?: string
+          rating: number
+          updated_at?: string | null
+        }
+        Update: {
+          blog_id?: string
+          created_at?: string | null
+          id?: string
+          rating?: number
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ratings_blog_id_fkey"
+            columns: ["blog_id"]
+            isOneToOne: false
+            referencedRelation: "blogs"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      calculate_blog_rating: {
+        Args: {
+          blog_id: string
+        }
+        Returns: number
+      }
+      calculate_product_rating: {
+        Args: {
+          p_id: string
+        }
+        Returns: {
+          average_rating: number
+          total_ratings: number
+          rating_distribution: number[]
+        }[]
+      }
+      create_ratings_table: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
+      increment_share_count: {
+        Args: {
+          blog_id: string
+        }
+        Returns: undefined
+      }
+      increment_view_count: {
+        Args: {
+          blog_id: string
+        }
+        Returns: undefined
+      }
     }
     Enums: {
-      submission_status: "pending" | "completed" | "error"
+      [_ in never]: never
     }
     CompositeTypes: {
       [_ in never]: never
