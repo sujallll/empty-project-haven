@@ -1,6 +1,12 @@
 import { LaptopProduct, MobileProduct } from "@/types/product";
 
-const ProductContent = ({ product }: { product: LaptopProduct | MobileProduct }) => {
+interface ProductContentProps {
+  product: LaptopProduct | MobileProduct;
+  type?: 'mobile' | 'laptop';
+  activeSection?: string;
+}
+
+export const ProductContent = ({ product, type, activeSection }: ProductContentProps) => {
   const isMobile = 'camera' in product;
   
   return (
@@ -62,5 +68,3 @@ const ProductContent = ({ product }: { product: LaptopProduct | MobileProduct })
     </div>
   );
 };
-
-export default ProductContent;

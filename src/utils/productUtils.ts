@@ -1,7 +1,7 @@
 import type { Json } from "@/integrations/supabase/types";
 import type { LaptopProduct, MobileProduct } from "@/types/product";
 
-export const convertJsonFields = <T extends Record<string, any>>(data: T): T => {
+export const convertJsonFields = (data: Record<string, any>): Record<string, any> => {
   const result = { ...data };
   Object.keys(result).forEach(key => {
     if (
@@ -14,7 +14,7 @@ export const convertJsonFields = <T extends Record<string, any>>(data: T): T => 
         try {
           result[key] = JSON.parse(result[key]);
         } catch {
-          result[key] = null;
+          result[key] = {};
         }
       }
     }
@@ -31,7 +31,7 @@ export const processProduct = (data: any): LaptopProduct | MobileProduct => {
       try {
         processed[field] = processed[field].split(',').map((s: string) => s.trim());
       } catch {
-        processed[field] = null;
+        processed[field] = [];
       }
     }
   });
