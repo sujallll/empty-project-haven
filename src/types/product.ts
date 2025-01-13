@@ -48,6 +48,8 @@ export interface MobileProduct extends BaseProduct {
   build_material?: string | null;
   sim_type?: string | null;
   protection_rating?: string | null;
+  battery_type?: string | null;
+  battery_charging?: Record<string, any> | null;
   wlan?: string | null;
   bluetooth?: string | null;
   nfc?: boolean;
@@ -71,20 +73,9 @@ export interface MobileProduct extends BaseProduct {
   sensor_specs?: Record<string, any> | null;
   network_specs?: Record<string, any> | null;
   general_specs?: Record<string, any> | null;
-  battery_type?: string | null;
-  battery_charging?: Record<string, any> | null;
 }
 
 export type ProductFormData = MobileProduct | LaptopProduct;
-
-// Type guard functions
-export function isMobileProduct(product: ProductFormData): product is MobileProduct {
-  return 'camera' in product;
-}
-
-export function isLaptopProduct(product: ProductFormData): product is LaptopProduct {
-  return 'graphics' in product;
-}
 
 // Helper function to convert Json to Record<string, any>
 export function convertJsonToRecord(json: Json | null): Record<string, any> | null {
@@ -125,4 +116,13 @@ export function convertDatabaseProduct(data: any): MobileProduct | LaptopProduct
       connectivity_specs: convertJsonToRecord(data.connectivity_specs),
     } as LaptopProduct;
   }
+}
+
+// Type guard functions
+export function isMobileProduct(product: ProductFormData): product is MobileProduct {
+  return 'camera' in product;
+}
+
+export function isLaptopProduct(product: ProductFormData): product is LaptopProduct {
+  return 'graphics' in product;
 }

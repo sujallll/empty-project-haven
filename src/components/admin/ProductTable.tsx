@@ -1,65 +1,61 @@
-import { ProductImage } from "@/components/product/ProductImage";
-import { Button } from "@/components/ui/button";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Pencil, Trash2 } from "lucide-react";
-import type { MobileProduct, LaptopProduct } from "@/types/product";
+import { MobileProduct, LaptopProduct } from "@/types/product";
 
-interface ProductTableProps {
+export interface ProductTableProps {
   products: (MobileProduct | LaptopProduct)[];
-  onEdit: (product: MobileProduct | LaptopProduct) => void;
-  onDelete: (productId: string) => void;
+  onView?: (product: MobileProduct | LaptopProduct) => void;
+  onEdit?: (product: MobileProduct | LaptopProduct) => void;
+  onAddReview?: (product: MobileProduct | LaptopProduct) => void;
+  onDelete: (id: string) => Promise<void>;
 }
 
-export function ProductTable({ products, onEdit, onDelete }: ProductTableProps) {
+export function ProductTable({ products, onView, onEdit, onAddReview, onDelete }: ProductTableProps) {
   return (
-    <div className="space-y-4">
-      <div className="rounded-md border">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Image</TableHead>
-              <TableHead>Name</TableHead>
-              <TableHead>Brand</TableHead>
-              <TableHead>Price</TableHead>
-              <TableHead>Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {products.map((product) => (
-              <TableRow key={product.id}>
-                <TableCell>
-                  <ProductImage
-                    src={product.image_url}
-                    alt={product.name}
-                    className="w-16 h-16"
-                  />
-                </TableCell>
-                <TableCell>{product.name}</TableCell>
-                <TableCell>{product.brand}</TableCell>
-                <TableCell>₹{product.price.toLocaleString()}</TableCell>
-                <TableCell>
-                  <div className="flex items-center gap-2">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => onEdit(product)}
-                    >
-                      <Pencil className="h-4 w-4" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => onDelete(product.id)}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </div>
-    </div>
+    <table className="min-w-full divide-y divide-gray-200">
+      <thead className="bg-gray-50">
+        <tr>
+          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            Product Name
+          </th>
+          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            Brand
+          </th>
+          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            Price
+          </th>
+          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            Actions
+          </th>
+        </tr>
+      </thead>
+      <tbody className="bg-white divide-y divide-gray-200">
+        {products.map((product) => (
+          <tr key={product.id}>
+            <td className="px-6 py-4 whitespace-nowrap">
+              <div className="text-sm text-gray-900">{product.name}</div>
+            </td>
+            <td className="px-6 py-4 whitespace-nowrap">
+              <div className="text-sm text-gray-900">{product.brand}</div>
+            </td>
+            <td className="px-6 py-4 whitespace-nowrap">
+              <div className="text-sm text-gray-900">₹{product.price}</div>
+            </td>
+            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+              <button onClick={() => onView?.(product)} className="text-indigo-600 hover:text-indigo-900">
+                View
+              </button>
+              <button onClick={() => onEdit?.(product)} className="text-indigo-600 hover:text-indigo-900 ml-4">
+                Edit
+              </button>
+              <button onClick={() => onAddReview?.(product)} className="text-indigo-600 hover:text-indigo-900 ml-4">
+                Add Review
+              </button>
+              <button onClick={() => onDelete(product.id)} className="text-red-600 hover:text-red-900 ml-4">
+                Delete
+              </button>
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
   );
 }
