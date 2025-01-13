@@ -1,50 +1,96 @@
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Github } from "lucide-react";
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { Navigation } from "@/components/Navigation";
+import { Footer } from "@/components/Footer";
+import { FeaturedArticlesGrid } from "@/components/FeaturedArticlesGrid";
+import { CarouselSection } from "@/components/CarouselSection";
+import { ArticleTabs } from "@/components/ArticleTabs";
+import { BlogSidebar } from "@/components/BlogSidebar";
+import { PopularMobiles } from "@/components/product/PopularMobiles";
+import type { BlogFormData } from "@/types/blog";
 
-const Index = () => {
+export default function Index() {
+  const [activeTab, setActiveTab] = useState("popular");
+
+  const { data: featuredArticles = [] } = useQuery({
+    queryKey: ['featured-articles'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('blogs')
+        .select('*')
+        .eq('featured', true)
+        .order('created_at', { ascending: false });
+      
+      if (error) throw error;
+      return data || [];
+    }
+  });
+
+  const { data: popularArticles = [] } = useQuery({
+    queryKey: ['popular-articles'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('blogs')
+        .select('*')
+        .eq('popular', true)
+        .order('created_at', { ascending: false });
+      
+      if (error) throw error;
+      return data || [];
+    }
+  });
+
+  const { data: recentArticles = [] } = useQuery({
+    queryKey: ['recent-articles'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('blogs')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(6);
+      
+      if (error) throw error;
+      return data || [];
+    }
+  });
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-gray-50 to-gray-100 p-4">
-      <Card className="max-w-2xl w-full p-8 space-y-6">
-        <div className="space-y-2 text-center">
-          <Github className="w-12 h-12 mx-auto text-gray-700" />
-          <h1 className="text-3xl font-bold tracking-tighter">Import Your GitHub Project</h1>
-          <p className="text-gray-500">
-            This space is ready for your GitHub project. Follow these steps to get started:
-          </p>
-        </div>
-        
-        <div className="space-y-4">
-          <div className="space-y-2">
-            <h2 className="text-xl font-semibold">Steps to Import:</h2>
-            <ol className="list-decimal list-inside space-y-2 text-gray-600">
-              <li>Clone your GitHub repository locally</li>
-              <li>Copy your project files into this directory</li>
-              <li>Update dependencies in package.json</li>
-              <li>Run npm install to set up dependencies</li>
-              <li>Start the development server with npm run dev</li>
-            </ol>
-          </div>
-          
-          <div className="bg-blue-50 p-4 rounded-lg">
-            <p className="text-sm text-blue-600">
-              Tip: Make sure to check your project's compatibility with the current setup and resolve any dependency conflicts.
-            </p>
-          </div>
+    <div className="min-h-screen bg-gray-50">
+      <Navigation />
+      
+      <main className="container mx-auto px-4 py-8">
+        <FeaturedArticlesGrid articles={featuredArticles} />
+
+        <div className="w-full h-[200px] bg-gray-200 flex items-center justify-center my-8">
+          <span className="text-gray-500">Advertisement</span>
         </div>
 
-        <div className="flex justify-center pt-4">
-          <Button
-            className="flex items-center gap-2"
-            onClick={() => window.open("https://github.com", "_blank")}
-          >
-            <Github className="w-4 h-4" />
-            Go to GitHub
-          </Button>
+        <CarouselSection 
+          title="Tech Deals" 
+          linkTo="/tech" 
+          articles={popularArticles.filter(article => article.category === 'TECH')} 
+        />
+
+        <PopularMobiles />
+
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+          <div className="lg:col-span-8">
+            <ArticleTabs
+              popularArticles={popularArticles}
+              recentArticles={recentArticles}
+              onTabChange={setActiveTab}
+              category="HOME"
+            />
+          </div>
+
+          <div className="lg:col-span-4">
+            <BlogSidebar />
+          </div>
         </div>
-      </Card>
+      </main>
+
+      <Footer />
     </div>
   );
-};
-
-export default Index;
+}
