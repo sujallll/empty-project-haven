@@ -31,7 +31,6 @@ const getBrandWebsite = (brand: string): string => {
 interface ProductContentProps {
   product: LaptopProduct | MobileProduct;
   type: 'mobile' | 'laptop';
-  activeSection: string;
 }
 
 export function ProductContent({ product: initialProduct, type }: ProductContentProps) {
@@ -69,79 +68,78 @@ export function ProductContent({ product: initialProduct, type }: ProductContent
     },
   });
 
+  const isMobileProduct = (product: MobileProduct | LaptopProduct): product is MobileProduct => {
+    return 'camera' in product;
+  };
+
   return (
     <div className="flex-1 space-y-16">
-      {/* Overview Section */}
       <section id="overview" className="scroll-mt-24">
         <div className="space-y-8">
-          <div className="space-y-4">
-            <div className="flex items-start justify-between">
-              <div>
-                <div className="flex items-center gap-4">
-                  <h1 className="text-3xl font-bold">{currentProduct.name}</h1>
-                </div>
-                <div className="flex items-center gap-2 text-sm text-muted-foreground mt-1">
-                  {isMobile && currentProduct.announced && (
-                    <div className="flex items-center gap-1">
-                      <Calendar className="w-4 h-4" />
-                      <span>Released {currentProduct.announced}</span>
-                    </div>
-                  )}
-                  <span>•</span>
-                  <a 
-                    href={brandWebsite} 
-                    target="_blank" 
-                    rel="noopener noreferrer" 
-                    className="text-primary hover:underline"
-                  >
-                    About {currentProduct.brand}
-                  </a>
-                </div>
+          <div className="flex items-start justify-between">
+            <div>
+              <div className="flex items-center gap-4">
+                <h1 className="text-3xl font-bold">{currentProduct.name}</h1>
               </div>
-              <Button 
-                variant="default" 
-                className="bg-teal-600 hover:bg-teal-700"
-                onClick={handleCompare}
-              >
-                Compare
-              </Button>
-            </div>
-
-            <div className="space-y-2">
-              <div className="flex items-baseline gap-2">
-                <span className="text-2xl font-bold">₹{currentProduct.price.toLocaleString()}</span>
-                <span className="text-sm text-muted-foreground">(onwards)</span>
+              <div className="flex items-center gap-2 text-sm text-muted-foreground mt-1">
+                {isMobileProduct(currentProduct) && currentProduct.announced && (
+                  <div className="flex items-center gap-1">
+                    <Calendar className="w-4 h-4" />
+                    <span>Released {currentProduct.announced}</span>
+                  </div>
+                )}
+                <span>•</span>
+                <a 
+                  href={brandWebsite} 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="text-primary hover:underline"
+                >
+                  About {currentProduct.brand}
+                </a>
               </div>
-              <a href="#variants" className="text-sm text-primary hover:underline">See All Variants</a>
             </div>
-
-            {isMobile && (
-              <ProductVariantSelector
-                product={currentProduct}
-                type={type}
-                onVariantChange={handleVariantChange}
-              />
-            )}
-
-            <ProductKeySpecs
-              type={type}
-              screenSize={currentProduct.display_specs}
-              camera={isMobile ? (currentProduct as MobileProduct).camera : undefined}
-              processor={currentProduct.processor}
-              battery={currentProduct.battery}
-              graphics={isLaptop ? (currentProduct as LaptopProduct).graphics : undefined}
-            />
+            <Button 
+              variant="default" 
+              className="bg-teal-600 hover:bg-teal-700"
+              onClick={handleCompare}
+            >
+              Compare
+            </Button>
           </div>
+
+          <div className="space-y-2">
+            <div className="flex items-baseline gap-2">
+              <span className="text-2xl font-bold">₹{currentProduct.price.toLocaleString()}</span>
+              <span className="text-sm text-muted-foreground">(onwards)</span>
+            </div>
+            <a href="#variants" className="text-sm text-primary hover:underline">See All Variants</a>
+          </div>
+
+          {isMobile && (
+            <ProductVariantSelector
+              product={currentProduct}
+              type={type}
+              onVariantChange={handleVariantChange}
+            />
+          )}
+
+          <ProductKeySpecs
+            type={type}
+            screenSize={currentProduct.display_specs}
+            camera={isMobile ? (currentProduct as MobileProduct).camera : undefined}
+            processor={currentProduct.processor}
+            battery={currentProduct.battery}
+            graphics={isLaptop ? (currentProduct as LaptopProduct).graphics : undefined}
+          />
         </div>
       </section>
 
-      {/* Review Section */}
       <section id="review" className="scroll-mt-24">
         <h2 className="text-2xl font-bold mb-6">Expert Review</h2>
         <ProductReview productId={currentProduct.id} />
       </section>
 
-      {/* User Reviews Section */}
       <section id="user-reviews" className="scroll-mt-24">
         <h2 className="text-2xl font-bold mb-6">User Reviews</h2>
         <ProductRatingSystem productId={currentProduct.id} />
@@ -150,13 +148,11 @@ export function ProductContent({ product: initialProduct, type }: ProductContent
         </div>
       </section>
 
-      {/* Specifications Section */}
       <section id="specifications" className="scroll-mt-24">
         <h2 className="text-2xl font-bold mb-6">Full Specification</h2>
         <ProductSpecifications product={currentProduct} />
       </section>
 
-      {/* Compare Section */}
       <section id="comparison" className="scroll-mt-24">
         <h2 className="text-2xl font-bold mb-6">Compare Products</h2>
         <div className="bg-white rounded-lg p-8 border shadow-sm hover:shadow-md transition-shadow duration-200">
@@ -188,7 +184,6 @@ export function ProductContent({ product: initialProduct, type }: ProductContent
         </div>
       </section>
 
-      {/* Variants Section */}
       <section id="variants" className="scroll-mt-24">
         <h2 className="text-2xl font-bold mb-6">Available Variants</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">

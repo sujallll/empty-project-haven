@@ -1,23 +1,31 @@
-import { AspectRatio } from "@/components/ui/aspect-ratio";
-import { Card, CardContent } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
+import { X } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface ProductImageProps {
-  imageUrl: string;
-  productName: string;
+  url: string;
+  onRemove?: () => void;
+  className?: string;
 }
 
-export function ProductImage({ imageUrl, productName }: ProductImageProps) {
+export function ProductImage({ url, onRemove, className }: ProductImageProps) {
   return (
-    <Card className="overflow-hidden">
-      <CardContent className="p-2">
-        <AspectRatio ratio={1}>
-          <img
-            src={imageUrl}
-            alt={productName}
-            className="object-contain w-full h-full"
-          />
-        </AspectRatio>
-      </CardContent>
-    </Card>
+    <div className={cn("relative group", className)}>
+      <img
+        src={url}
+        alt="Product"
+        className="w-full h-full object-cover rounded-lg"
+      />
+      {onRemove && (
+        <Button
+          variant="destructive"
+          size="icon"
+          className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity"
+          onClick={onRemove}
+        >
+          <X className="h-4 w-4" />
+        </Button>
+      )}
+    </div>
   );
 }
