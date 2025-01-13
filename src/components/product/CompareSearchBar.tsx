@@ -1,6 +1,11 @@
+import { useState } from "react";
+import { Input } from "@/components/ui/input";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { MobileProduct, LaptopProduct } from "@/types/product";
+import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Loader2 } from "lucide-react";
 
 interface CompareSearchBarProps {
   type: 'mobile' | 'laptop';
@@ -8,50 +13,86 @@ interface CompareSearchBarProps {
   currentProductId: string;
 }
 
-const CompareSearchBar = ({ 
-  type,
-  onProductSelect,
-  currentProductId 
-}: CompareSearchBarProps) => {
-  const { data: products = [] } = useQuery({
-    queryKey: ['products', type],
+export function CompareSearchBar({ type, onProductSelect, currentProductId }: CompareSearchBarProps) {
+  const [searchQuery, setSearchQuery] = useState('');
+  const [isOpen, setIsOpen] = useState(false);
+
+  const { data: searchResults = [], isLoading } = useQuery({
+    queryKey: ['product-search', type, searchQuery],
     queryFn: async () => {
+      if (!searchQuery) return [];
+      
       const tableName = type === 'laptop' ? 'laptops' : 'mobile_products';
       const { data, error } = await supabase
         .from(tableName)
         .select('*')
         .neq('id', currentProductId)
-        .limit(10);
+        .ilike('name', `%${searchQuery}%`)
+        .limit(5);
 
       if (error) throw error;
-      return data.map(processProduct);
+      return data;
     },
+    enabled: searchQuery.length > 0,
   });
 
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+    setIsOpen(true);
+  };
+
+  const handleProductSelect = (product: MobileProduct | LaptopProduct) => {
+    onProductSelect(product);
+    setSearchQuery('');
+    setIsOpen(false);
+  };
+
   return (
-    <div className="space-y-4">
-      <h3 className="text-lg font-semibold">Add Products to Compare</h3>
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        {products.map((product) => (
-          <div key={product.id} className="border rounded-lg p-4 bg-white shadow-sm">
-            <img
-              src={product.image_url || "/placeholder.svg"}
-              alt={product.name}
-              className="w-full h-32 object-contain mb-2"
-            />
-            <h4 className="font-medium text-sm">{product.name}</h4>
-            <p className="text-sm text-muted-foreground mb-2">₹{product.price.toLocaleString()}</p>
-            <button
-              className="w-full bg-teal-600 hover:bg-teal-700 text-white py-2 rounded"
-              onClick={() => onProductSelect(product)}
-            >
-              Add to Compare
-            </button>
+    <div className="relative">
+      <Input
+        type="search"
+        placeholder="Search products to compare..."
+        value={searchQuery}
+        onChange={handleInputChange}
+        onFocus={() => setIsOpen(true)}
+        className="w-full"
+      />
+      {isOpen && (searchResults.length > 0 || isLoading) && (
+        <ScrollArea className="absolute z-50 w-full mt-1 bg-white border rounded-md shadow-lg max-h-60">
+          <div className="p-2">
+            {isLoading ? (
+              <div className="flex items-center justify-center py-4">
+                <Loader2 className="h-6 w-6 animate-spin text-gray-500" />
+              </div>
+            ) : (
+              searchResults.map((product) => (
+                <Button
+                  key={product.id}
+                  variant="ghost"
+                  className="w-full justify-start text-left hover:bg-gray-100"
+                  onClick={() => handleProductSelect(product)}
+                >
+                  <div className="flex items-center gap-2">
+                    {product.image_url && (
+                      <img
+                        src={product.image_url}
+                        alt={product.name}
+                        className="w-8 h-8 object-contain"
+                      />
+                    )}
+                    <div>
+                      <p className="font-medium">{product.name}</p>
+                      <p className="text-sm text-muted-foreground">
+                        {product.brand} • ₹{product.price.toLocaleString()}
+                      </p>
+                    </div>
+                  </div>
+                </Button>
+              ))
+            )}
           </div>
-        ))}
-      </div>
+        </ScrollArea>
+      )}
     </div>
   );
-};
-
-export default CompareSearchBar;
+}
