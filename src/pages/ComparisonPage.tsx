@@ -1,6 +1,5 @@
 import { Layout } from "@/components/Layout";
 import { CompareSection } from "@/components/product/CompareSection";
-import { CompareSearchBar } from "@/components/product/CompareSearchBar";
 import { useLocation } from "react-router-dom";
 import type { LaptopProduct, MobileProduct } from "@/types/product";
 
@@ -28,3 +27,5 @@ export function ComparisonPage() {
     </Layout>
   );
 }
+
+export default ComparisonPage;

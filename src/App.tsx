@@ -15,7 +15,7 @@ import EntertainmentPage from "./pages/EntertainmentPage";
 import GadgetsPage from "./pages/GadgetsPage";
 import ProductDetailPage from "./pages/ProductDetailPage";
 import ProductReviewsPage from "./pages/ProductReviewsPage";
-import ComparisonPage from "./pages/ComparisonPage";
+import { ComparisonPage } from "./pages/ComparisonPage";
 import AboutUs from "./pages/AboutUs";
 import NotFound from "./pages/NotFound";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
